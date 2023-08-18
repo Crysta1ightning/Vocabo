@@ -1,43 +1,35 @@
-export const API_RESULT_DEFAULT: API_RESULT[] = [
+export const API_RESULT_DEFAULT: [DictionaryAPI_Result, UrbanDictionary_Result] = [
     {
-        vocab: "Vocabulary",
-        pos: "Noun",
-        definitions: [
-            {
-                definition: "A usually alphabetized and explained collection of words e.g. of a particular field, or prepared for a specific purpose, often for learning.",
-                example: "",
-                thumbs_up: 0,
-                thumbs_down: 0
-            },
-            {
-                definition: "The collection of words a person knows and uses.",
-                example: "My Russian vocabulary is very limited.",
-                thumbs_up: 0,
-                thumbs_down: 0
-            },
-            {
-                definition: "The stock of words used in a particular field.",
-                example: "The vocabulary of social sciences is often incomprehensible to ordinary people.",
-                thumbs_up: 0,
-                thumbs_down: 0
-            },
-            {
-                definition: "The words of a language collectively.",
-                example: "The vocabulary of any language is influenced by contacts with other cultures.",
-                thumbs_up: 0,
-                thumbs_down: 0
-            },
-            {
-                definition: "The words of a language collectively.",
-                example: "The vocabulary of any language is influenced by contacts with other cultures.",
-                thumbs_up: 0,
-                thumbs_down: 0
-            }
-        ]
+        vocab: "vocabulary",
+        meanings: [
+        {   
+            pos: "Noun",
+            definitions: [
+                {
+                    definition: "A usually alphabetized and explained collection of words e.g. of a particular field, or prepared for a specific purpose, often for learning.",
+                    example: ""
+                },
+                {
+                    definition: "The collection of words a person knows and uses.",
+                    example: "My Russian vocabulary is very limited.",
+                },
+                {
+                    definition: "The stock of words used in a particular field.",
+                    example: "The vocabulary of social sciences is often incomprehensible to ordinary people.",
+                },
+                {
+                    definition: "The words of a language collectively.",
+                    example: "The vocabulary of any language is influenced by contacts with other cultures.",
+                },
+                {
+                    definition: "The words of a language collectively.",
+                    example: "The vocabulary of any language is influenced by contacts with other cultures.",
+                }
+            ]
+        }]
     },
     {
-        vocab: "Vocabulary",
-        pos: "",
+        vocab: "vocabulary",
         definitions: [
             {
                 definition: "Those [words] that we [speak]",
@@ -70,16 +62,6 @@ export const API_RESULT_DEFAULT: API_RESULT[] = [
                 thumbs_down: 2
             }
         ]
-    },
-    {
-        vocab: "",
-        pos: "",
-        definitions: []
-    },
-    {
-        vocab: "",
-        pos: "",
-        definitions: []
     }
 ];
 
