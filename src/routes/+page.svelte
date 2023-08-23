@@ -18,8 +18,11 @@
 
 
     const fetchData = async () => {
-        if (vocabInput == "") return 
-
+        if (vocabInput == "") {
+            isLoading = false
+            return 
+        }
+        
         try {
             const res = await API_CALL[0](vocabInput)
             dictAPIResult1 = await API_PARSE[0](res)
@@ -84,7 +87,7 @@
             <div class="dictionary" id="dict1">
                 <div class="label">{DICTS[0]}</div>
                 {#if defNotFound[0]}
-                    <div class="defNotFound">Sorry, {notFoundWord} did not match any result</div>
+                    <div class="defNotFound">Sorry, "{notFoundWord}" did not match any result</div>
                 {:else}
                     <h3 class="vocab">{dictAPIResult1.vocab}</h3>
                     {#each dictAPIResult1.meanings as meaning}
@@ -104,7 +107,7 @@
             <div class="dictionary" id="dict2">
                 <div class="label">{DICTS[1]}</div>
                 {#if defNotFound[1]}
-                    <div class="defNotFound">Sorry, {notFoundWord} did not match any result</div>
+                    <div class="defNotFound">Sorry, "{notFoundWord}" did not match any result</div>
                 {:else}
                     <h3 class="vocab">{dictAPIResult2.vocab}</h3>
                     {#if dictAPIResult2.definitions}
@@ -141,17 +144,12 @@
     ::-webkit-scrollbar {
         width: 10px;
     }
-    /* Track */
     ::-webkit-scrollbar-track {
     background: #f1f1f1; 
     }
-    
-    /* Handle */
     ::-webkit-scrollbar-thumb {
     background: #ccc; 
     }
-
-    /* Handle on hover */
     ::-webkit-scrollbar-thumb:hover {
     background: #888; 
     }
@@ -170,7 +168,6 @@
             justify-content: center;
             flex-direction: column;
             .icon {
-                // background-color: yellow;
                 height: 8vh;
                 padding: 5px 0;
             }
@@ -178,7 +175,6 @@
             .search {
                 height: 8vh;
                 position: relative;
-                // background-color: aqua;
                 .searchInput {
                     border-style: none;
                     width: 46vw;
@@ -240,6 +236,7 @@
                 }
                 .defblock {
                     margin: 10px 0px;
+                    position: relative;
                     .def {
                         margin: 0 0 5px 0;
                         display: inline-block;
@@ -247,19 +244,21 @@
                         font-weight: bold;
                     }
                     .exp {
-                        margin: 0;
+                        margin: 0 0 0 10px;
                         white-space: pre-line
                     }
                     .exp::before {
+                        position: absolute;
+                        left: 0;
                         content:"• ";
                     }
                     .thumbs {
-                        display: inline-block;
+                        display: block;
                         .thumb {
                             display: inline-block;
                             font-size: 14px;
                             background: #FFD9B7;
-                            width: 40px;
+                            min-width: 40px;
                             line-height: 20px;
                             text-align: center;
                         }
