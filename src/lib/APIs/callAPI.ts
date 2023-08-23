@@ -4,6 +4,13 @@ const callDictionaryAPI = async (vocabInput: string): Promise<Response> => {
     const res = await fetch(url)
     return res
 };
-export const API_CALL = [
+const callUrbanDictionary = async(vocabInput: string): Promise<Response> => {
+    const url = API_URLS[1] + vocabInput
+    const res = await fetch(url)
+    return res
+}
+
+export const API_CALL: ((vocabInput: string) => Promise<Response>)[] = [
     callDictionaryAPI,
-]
+    callUrbanDictionary
+];

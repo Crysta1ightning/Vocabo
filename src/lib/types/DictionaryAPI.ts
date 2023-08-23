@@ -1,16 +1,15 @@
 // before parse
-type Definition = {
+type DictionaryAPI_Definition = {
     definition: string;
     example?: string;
 };
 
-type Meaning = {
+type DictionaryAPI_Meaning = {
     partOfSpeech: string;
-    definitions: Definition[];
+    definitions: DictionaryAPI_Definition[];
 };
 
 // after parse
-
 type DictionaryAPI_Result = {
     vocab: string
     meanings: {

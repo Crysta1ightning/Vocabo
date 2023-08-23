@@ -1,3 +1,12 @@
+// before parse
+type urbandictionary_Definition = {
+    definition: string;
+    example: string;
+    thumbs_up: number;
+    thumbs_down: number
+};
+
+// after parse
 type UrbanDictionary_Result = {
     vocab: string
     definitions: {

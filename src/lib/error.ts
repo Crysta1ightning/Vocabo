@@ -1,6 +1,6 @@
 export class DefinitionsNotFoundError extends Error {
     constructor(message: string) {
-        super(message);
+        super("Definitions not found for " + message);
         this.name = 'DefinitionsNotFoundError';
     }
 }

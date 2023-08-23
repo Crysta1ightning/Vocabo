@@ -12,7 +12,7 @@
     let vocabInput:string = $page.url.searchParams.get("vocab") || ""
     let dictAPIResult1:DictionaryAPI_Result = API_RESULT_DEFAULT[0]
     let dictAPIResult2:UrbanDictionary_Result = API_RESULT_DEFAULT[1]
-    let isLoading: boolean = false; // Loading indicator
+    let isLoading: boolean = true; // Loading indicator
     let defNotFound: boolean[] = [false, false, false, false]
     let notFoundWord: string = ""
 
@@ -20,7 +20,6 @@
     const fetchData = async () => {
         if (vocabInput == "") return 
 
-        isLoading = true
         try {
             const res = await API_CALL[0](vocabInput)
             dictAPIResult1 = await API_PARSE[0](res)
@@ -35,6 +34,22 @@
                 console.error('An error occurred:', error);
             }
         }
+
+        try {
+            const res = await API_CALL[1](vocabInput)
+            dictAPIResult2 = await API_PARSE[1](res)
+        } catch (error) {
+            if (error instanceof DefinitionsNotFoundError) {
+                // Handle the error, show a message to the user, etc.
+                console.error('Definitions not found:', error.message);
+                defNotFound[1] = true
+                notFoundWord = vocabInput
+            } else {
+                // Handle other types of errors
+                console.error('An error occurred:', error);
+            }
+        }
+
         isLoading = false
         
     }
@@ -89,7 +104,7 @@
             <div class="dictionary" id="dict2">
                 <div class="label">{DICTS[1]}</div>
                 {#if defNotFound[1]}
-                    <div class="defNotFound">Sorry, we didn't find any result</div>
+                    <div class="defNotFound">Sorry, {notFoundWord} did not match any result</div>
                 {:else}
                     <h3 class="vocab">{dictAPIResult2.vocab}</h3>
                     {#if dictAPIResult2.definitions}
@@ -224,14 +239,16 @@
                     text-align: center;
                 }
                 .defblock {
-                    // background-color: #9ED2BE;
                     margin: 10px 0px;
                     .def {
                         margin: 0 0 5px 0;
                         display: inline-block;
+                        white-space: pre-line;
+                        font-weight: bold;
                     }
                     .exp {
                         margin: 0;
+                        white-space: pre-line
                     }
                     .exp::before {
                         content:"• ";
