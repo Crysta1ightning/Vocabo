@@ -339,4 +339,69 @@
     }
 
 
+    // mobile
+
+    @media screen and (max-width: 768px) {
+        #mainPage {
+            min-height: 100vh;
+            height: 100%;
+            .header {
+                height: 15vh;
+                .icon {
+                    height: 6vh;
+                }
+                .search {
+                    margin: 5px 0 0 10px;
+                    .searchInput {
+                        width: 60vw;
+                        font-size: 16px;
+                    }
+                    .searchIcon {
+                        top: 1vh;
+                    }
+                }
+            }
+            .dicts {
+                height: auto;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                .dictionary {
+                    margin: 10px;
+                    width: 90vw;
+                    padding: 10px;
+                    background-color: #FFFFFF;
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                    overflow-y: hidden; /* Prevent vertical scrollbar */
+                    .exp::before {
+                        left: -5px;
+                        width: 2px;
+                    }
+                    .thumbs .thumb {
+                        min-width: 20px;
+                    }
+                    .defblock {
+                        margin: 15px 0;
+                        padding: 10px;
+                        border-top: 1px solid #e0e0e0;
+                    }
+                }
+                .loading::before {
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                }
+            }
+            .exp {
+                margin: 5px 0 5px 10px;
+                white-space: pre-line;
+                position: relative;
+                .exp::before {
+                    left: -5px;
+                    width: 2px;
+                }
+            }
+        }
+    }
+
 </style>
