@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { API_RESULT_DEFAULT, EXAMPLE_NOTFOUND, DICTS } from "$lib/constants"
+    import { EXAMPLE_NOTFOUND, DICTS } from "$lib/constants"
     import { API_PARSE } from '$lib/APIs/parseAPI';
     import { API_CALL } from '$lib/APIs/callAPI';
     import { DefinitionsNotFoundError } from '$lib/error'
@@ -10,28 +10,29 @@
 
 
     let vocabInput:string = $page.url.searchParams.get("vocab") || ""
-    let dictAPIResult1:DictionaryAPI_Result = API_RESULT_DEFAULT[0]
-    let dictAPIResult2:UrbanDictionary_Result = API_RESULT_DEFAULT[1]
+    let dictAPIResult1:DictionaryAPI_Result
+    let dictAPIResult2:UrbanDictionary_Result
     let isLoading: boolean = true; // Loading indicator
     let defNotFound: boolean[] = [false, false, false, false]
     let notFoundWord: string = ""
 
 
     const fetchData = async () => {
+        let vI = vocabInput;
         if (vocabInput == "") {
-            isLoading = false
-            return 
+            vI = "vocabulary"
         }
+   
         
         try {
-            const res = await API_CALL[0](vocabInput)
+            const res = await API_CALL[0](vI)
             dictAPIResult1 = await API_PARSE[0](res)
         } catch (error) {
             if (error instanceof DefinitionsNotFoundError) {
                 // Handle the error, show a message to the user, etc.
                 console.error('Definitions not found:', error.message);
                 defNotFound[0] = true
-                notFoundWord = vocabInput
+                notFoundWord = vI
             } else {
                 // Handle other types of errors
                 console.error('An error occurred:', error);
@@ -39,14 +40,14 @@
         }
 
         try {
-            const res = await API_CALL[1](vocabInput)
+            const res = await API_CALL[1](vI)
             dictAPIResult2 = await API_PARSE[1](res)
         } catch (error) {
             if (error instanceof DefinitionsNotFoundError) {
                 // Handle the error, show a message to the user, etc.
                 console.error('Definitions not found:', error.message);
                 defNotFound[1] = true
-                notFoundWord = vocabInput
+                notFoundWord = vI
             } else {
                 // Handle other types of errors
                 console.error('An error occurred:', error);
@@ -230,9 +231,11 @@
                 .pos {
                     font-size: 14px;
                     background: #FFD9B7;
-                    width: 50px;
+                    min-width: 40px;
                     line-height: 20px;
                     text-align: center;
+                    display: inline-block;
+                    padding: 0 5px;
                 }
                 .defblock {
                     margin: 10px 0px;
@@ -244,13 +247,18 @@
                         font-weight: bold;
                     }
                     .exp {
-                        margin: 0 0 0 10px;
-                        white-space: pre-line
+                        margin: 5px 0 5px 10px;
+                        white-space: pre-line;
+                        position: relative;
                     }
                     .exp::before {
                         position: absolute;
-                        left: 0;
-                        content:"• ";
+                        left: -10px;
+                        content:"";
+                        height: 100%;
+                        width: 3px;
+                        // margin: 5px;
+                        background-color: #7EAA92;
                     }
                     .thumbs {
                         display: block;
@@ -258,13 +266,17 @@
                             display: inline-block;
                             font-size: 14px;
                             background: #FFD9B7;
-                            min-width: 40px;
+                            min-width: 30px;
                             line-height: 20px;
                             text-align: center;
+                            padding: 0 5px;
                         }
                     }
                     .notfound {
                         color: #D9D9D9;
+                    }
+                    .notfound::before {
+                        background-color: #D9D9D9;
                     }
                 }
                 .defNotFound {
