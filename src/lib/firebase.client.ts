@@ -2,15 +2,16 @@
 import { deleteApp, getApp, getApps, initializeApp } from "firebase/app";
 // import { getAnalytics } from "firebase/analytics";
 import { getAuth, setPersistence, inMemoryPersistence } from "firebase/auth";
+import { PUBLIC_APIKEY, PUBLIC_APPID, PUBLIC_AUTHDOMAIN, PUBLIC_MEASUREMENTID, PUBLIC_MESSAGINGSENDERID, PUBLIC_PROJECTID, PUBLIC_STORAGEBUCKET } from '$env/static/public';
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_APIKEY,
-  authDomain: import.meta.env.VITE_AUTHDOMAIN,
-  projectId: import.meta.env.VITE_PROJECTID,
-  storageBucket: import.meta.env.VITE_STORAGEBUCKET,
-  messagingSenderId: import.meta.env.VITE_MESSAGINGSENDERID,
-  appId: import.meta.env.VITE_APPID,
-  measurementId: import.meta.env.VITE_MEASUREMENTID,
+  apiKey: PUBLIC_APIKEY,
+  authDomain: PUBLIC_AUTHDOMAIN,
+  projectId: PUBLIC_PROJECTID,
+  storageBucket: PUBLIC_STORAGEBUCKET,
+  messagingSenderId: PUBLIC_MESSAGINGSENDERID,
+  appId: PUBLIC_APPID,
+  measurementId: PUBLIC_MEASUREMENTID,
 };
 
 let firebaseApp
