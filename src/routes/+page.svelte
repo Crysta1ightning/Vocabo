@@ -153,7 +153,7 @@
             align-items: center;
             justify-content: center;
             flex-direction: column;
-            padding: 5px 0;
+            padding-bottom: 2vh;
             // search
             .search {
                 position: absolute;
@@ -183,7 +183,7 @@
         // dictionaries
         .dicts {
             position: relative;
-            margin-top: 13vh;
+            margin-top: 14vh;
             padding-bottom: 2.5vh;
             .dictionary {
                 background: #FFFFFF;
