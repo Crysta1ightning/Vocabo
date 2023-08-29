@@ -76,7 +76,7 @@
     <div class="header">
         <img class="icon" src="/vocabo.png" alt="Vocabo"/>
         <div class="search">
-            <input class="searchInput" bind:value={vocabInput} placeholder="Search: What is the vocab you want to learn today"/>
+            <input class="searchInput" bind:value={vocabInput} placeholder="Search: The vocab to learn today"/>
             <button class="searchIcon" on:click={search}><IoIosSearch/></button>
         </div>
     </div>
@@ -141,35 +141,24 @@
 </div>
 
 <style lang="scss">
-
-    ::-webkit-scrollbar {
-        width: 10px;
-    }
-    ::-webkit-scrollbar-track {
-    background: #f1f1f1; 
-    }
-    ::-webkit-scrollbar-thumb {
-    background: #ccc; 
-    }
-    ::-webkit-scrollbar-thumb:hover {
-    background: #888; 
-    }
-
-
     #mainPage {
         background: #C8E4B2;
         width: 100vw;
-        height: 100vh;
+        height: auto;
         // header
         .header {
+            position: fixed;
+            top: 0;
+            z-index: 1;
             background: #9ED2BE;
-            height: 18vh;
+            width: 100vw;  
+            height: 10vh;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-direction: column;
             .icon {
-                height: 8vh;
+                height: 3Vh;
                 padding: 5px 0;
             }
             // search
@@ -178,11 +167,11 @@
                 position: relative;
                 .searchInput {
                     border-style: none;
-                    width: 46vw;
-                    height: 7.5vh;
+                    width: 80vw;
+                    height: 5vh;
                     border-radius: 45px;
                     padding: 0 2vw;
-                    font-size: 24px;
+                    font-size: 16px;
                 }
                 .searchInput:focus {
                     outline: none;
@@ -191,28 +180,25 @@
                     background-color: inherit;
                     border: none;
                     position: absolute;
-                    right: 2vw;
-                    top: 2vh;
-                    height: 4vh;
-                    cursor: pointer;
+                    right: 1vw;
+                    top: 1vh;
+                    height: 3vh;
                 }
             }
         }
 
         // dictionaries
         .dicts {
-            height: 82vh;
             position: relative;
+            margin-top: 10vh;
+            padding-bottom: 2.5vh;
             .dictionary {
                 background: #FFFFFF;
-                padding: 20px;
+                width: calc(100vw - 50px);
+                padding: 15px;
                 display: inline-block;
-                margin: 20px;
-                width: calc(50vw - 75px);
-                height: calc(41vh - 75px);
-                overflow-y: scroll;
+                margin: 10px;
                 position: relative;
-                
                 .label {
                     position: absolute;
                     right: 0;
@@ -257,7 +243,6 @@
                         content:"";
                         height: 100%;
                         width: 3px;
-                        // margin: 5px;
                         background-color: #7EAA92;
                     }
                     .thumbs {
@@ -296,18 +281,6 @@
                     color: #FFFFFF;
                 }
             }
-            #dict1, #dict2 {
-                margin-bottom: 10px;
-            }
-            #dict3, #dict4 {
-                margin-top: 10px;
-            }
-            #dict1, #dict3 {
-                margin-right: 10px;
-            }
-            #dict2, #dict4 {
-                margin-left: 10px;
-            }
             
             // loading 
             @keyframes spinner {
@@ -334,74 +307,103 @@
                 will-change: transform;
             }
         }
-
-        
     }
 
 
     // mobile
 
-    @media screen and (max-width: 768px) {
+    @media screen and (min-width: 768px) {
+        // scroll
+        ::-webkit-scrollbar {
+        width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+        background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+        background: #ccc; 
+        }
+        ::-webkit-scrollbar-thumb:hover {
+        background: #888; 
+        }
+
         #mainPage {
-            min-height: 100vh;
-            height: 100%;
+            height: 100vh;
+            // header
             .header {
-                height: 15vh;
+                position: relative;
+                height: 18vh;
                 .icon {
-                    height: 6vh;
+                    height: 8vh;
                 }
+                // search
                 .search {
-                    margin: 5px 0 0 10px;
+                    height: 8vh;
                     .searchInput {
-                        width: 60vw;
-                        font-size: 16px;
+                        width: 46vw;
+                        height: 7.5vh;
+                        font-size: 24px;
                     }
                     .searchIcon {
-                        top: 1vh;
+                        right: 2vw;
+                        top: 2vh;
+                        height: 4vh;
+                        cursor: pointer;
                     }
                 }
             }
+
+            // dictionaries
             .dicts {
-                height: auto;
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
+                height: 82vh;
+                position: relative;
+                margin: 0;
+                padding: 0;
                 .dictionary {
-                    margin: 10px;
-                    width: 90vw;
-                    padding: 10px;
-                    background-color: #FFFFFF;
-                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                    overflow-y: hidden; /* Prevent vertical scrollbar */
-                    .exp::before {
-                        left: -5px;
-                        width: 2px;
+                    padding: 20px;
+                    margin: 20px;
+                    width: calc(50vw - 75px);
+                    height: calc(41vh - 75px);
+                    overflow-y: scroll;
+                }
+                #dict1, #dict2 {
+                    margin-bottom: 10px;
+                }
+                #dict3, #dict4 {
+                    margin-top: 10px;
+                }
+                #dict1, #dict3 {
+                    margin-right: 10px;
+                }
+                #dict2, #dict4 {
+                    margin-left: 10px;
+                }
+                
+                // loading 
+                @keyframes spinner {
+                    0% {
+                    transform: translate3d(-50%, -50%, 0) rotate(0deg);
                     }
-                    .thumbs .thumb {
-                        min-width: 20px;
-                    }
-                    .defblock {
-                        margin: 15px 0;
-                        padding: 10px;
-                        border-top: 1px solid #e0e0e0;
+                    100% {
+                    transform: translate3d(-50%, -50%, 0) rotate(360deg);
                     }
                 }
                 .loading::before {
-                    position: fixed;
+                    animation: 1.5s linear infinite spinner;
+                    animation-play-state: inherit;
+                    border: solid 5px #f1f1f1;
+                    border-bottom-color: #7EAA92;
+                    border-radius: 50%;
+                    content: "";
+                    height: 40px;
+                    position: absolute;
                     top: 50%;
                     left: 50%;
-                }
-            }
-            .exp {
-                margin: 5px 0 5px 10px;
-                white-space: pre-line;
-                position: relative;
-                .exp::before {
-                    left: -5px;
-                    width: 2px;
+                    transform: translate3d(-50%, -50%, 0);
+                    width: 40px;
+                    will-change: transform;
                 }
             }
         }
     }
-
 </style>
