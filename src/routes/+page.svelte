@@ -55,7 +55,6 @@
         }
 
         isLoading = false
-        
     }
 
     onMount(fetchData);
@@ -144,7 +143,7 @@
     #mainPage {
         background: #C8E4B2;
         width: 100vw;
-        height: auto;
+        min-height: 100vh;
         // header
         .header {
             position: fixed;
@@ -300,7 +299,7 @@
                 content: "";
                 height: 40px;
                 position: absolute;
-                top: 50%;
+                top: 40vh;
                 left: 50%;
                 transform: translate3d(-50%, -50%, 0);
                 width: 40px;
@@ -380,28 +379,8 @@
                 }
                 
                 // loading 
-                @keyframes spinner {
-                    0% {
-                    transform: translate3d(-50%, -50%, 0) rotate(0deg);
-                    }
-                    100% {
-                    transform: translate3d(-50%, -50%, 0) rotate(360deg);
-                    }
-                }
                 .loading::before {
-                    animation: 1.5s linear infinite spinner;
-                    animation-play-state: inherit;
-                    border: solid 5px #f1f1f1;
-                    border-bottom-color: #7EAA92;
-                    border-radius: 50%;
-                    content: "";
-                    height: 40px;
-                    position: absolute;
                     top: 50%;
-                    left: 50%;
-                    transform: translate3d(-50%, -50%, 0);
-                    width: 40px;
-                    will-change: transform;
                 }
             }
         }
