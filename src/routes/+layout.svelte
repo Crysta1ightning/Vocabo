@@ -1,8 +1,54 @@
+<script lang="ts">
+    import { onMount } from 'svelte'
+    import { auth } from '$lib/firebase.client';
+    import { GoogleAuthProvider, signOut, signInWithRedirect } from "firebase/auth";
+    let loggedIn:Boolean = false
+    let loading:Boolean = true
+
+
+    onMount(() => {
+        auth.onAuthStateChanged((user) => {
+            loading = true
+            console.log(user)
+            if (user != null) {
+                loggedIn = true
+            } else {
+                loggedIn = false
+            }
+            loading = false
+        })
+    })
+
+    const vocaboSignIn = async () => {
+        const provider = new GoogleAuthProvider()
+        provider.addScope('profile')
+        provider.addScope('email')
+        await signInWithRedirect(auth, provider)
+
+    }
+
+    const vocaboSignOut = async () => {
+        try {
+            await signOut(auth)
+            loggedIn = false
+        } catch (error) {
+            console.log(error)
+        }
+    }
+</script>
+
 <div class="header">
-    <img class="icon" src="/vocabo.png" alt="Vocabo"/>
-    <button class="signin" on:click={()=>{}}>Sign In</button>
+    <button class="iconButton" on:click={()=>{window.location.href = "/"}}><img class="icon" src="/vocabo.png" alt="Vocabo"/></button>
+    {#if !loading}
+        {#if loggedIn}
+            <button class="custButton signout" on:click={vocaboSignOut}>Sign Out</button>
+            <button class="custButton history" on:click={()=>{window.location.href = "/history"}}>History</button>
+        {:else}
+            <button class="custButton signin" on:click={vocaboSignIn}>Sign In</button>    
+        {/if}
+    {/if}
 </div>
-<slot></slot>
+<slot/>
 
 <style lang="scss">
     // header
@@ -18,34 +64,53 @@
         justify-content: center;
         flex-direction: column;
         padding: 5px 0;
-        .icon {
-            height: 3Vh;
-            padding: 15px 0;
+        .iconButton {
+            background-color: inherit;
+            border: none;
+            .icon {
+                height: 3Vh;
+                padding: 15px 0;
+            }
         }
-        .signin {
+        .custButton {
             position: absolute;
             border-radius: 5px;
             right: 5vw;
-            top: 2vh;
+            top: 15px;
             height: 4vh;
+            padding: 0 5px;
             background-color: #FFFFFF;
             color: #7EAA92;
             border: none;
+        }
+        .history {
+            position: fixed;
+            // background-color: inherit;
+            // color: #FFFFFF;
+            border: #F1F1F1 1px solid;
+            width: fit-content;
+            left: 5vw; 
         }
     }
     @media screen and (min-width: 768px) {
         .header {
             height: 9vh;
             padding: 0;
-            .icon {
-                height: 6vh;
-                padding: 1vh;
+            .iconButton {
+                cursor: pointer;
+                .icon {
+                    height: 6vh;
+                    padding: 1vh;
+                }
             }
-            .signin {
+            .custButton {
                 right: 30px;
                 height: 6vh;
                 font-size: 16px;
                 cursor: pointer;
+            }
+            .history {
+                left: 30px;
             }
         }
     }

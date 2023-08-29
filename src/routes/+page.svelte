@@ -1,13 +1,12 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { EXAMPLE_NOTFOUND, DICTS } from "$lib/constants"
-    import { API_PARSE } from '$lib/APIs/parseAPI';
-    import { API_CALL } from '$lib/APIs/callAPI';
+    import { API_PARSE } from '../lib/APIs/parseAPI';
+    import { API_CALL } from '../lib/APIs/callAPI';
     import { DefinitionsNotFoundError } from '$lib/error'
     import { page } from '$app/stores'
     // @ts-ignore
     import IoIosSearch from 'svelte-icons/io/IoIosSearch.svelte'
-
 
     let vocabInput:string = $page.url.searchParams.get("vocab") || ""
     let dictAPIResult1:DictionaryAPI_Result
@@ -15,7 +14,6 @@
     let isLoading: boolean = true; // Loading indicator
     let defNotFound: boolean[] = [false, false, false, false]
     let notFoundWord: string = ""
-
 
     const fetchData = async () => {
         let vI = vocabInput;

@@ -2,7 +2,7 @@ import { DefinitionsNotFoundError } from "$lib/error";
 
 const parseDictionaryAPI = async (res: Response): Promise<DictionaryAPI_Result> => {
     const data = await res.json()
-    console.log(data)
+    // console.log(data)
     
     if (data.title === "No Definitions Found") {
         throw new DefinitionsNotFoundError("DictionaryAPI")
@@ -29,7 +29,7 @@ const replaceWords = (str: String): String => {
 
 const parseUrbanDictionary = async (res: Response): Promise<UrbanDictionary_Result> => {
     const data = await res.json()
-    console.log(data)
+    // console.log(data)
 
     if (data.list.length === 0) {
         throw new DefinitionsNotFoundError("UrbanDictionary")
