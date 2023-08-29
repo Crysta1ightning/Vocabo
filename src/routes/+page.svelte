@@ -22,7 +22,6 @@
         if (vocabInput == "") {
             vI = "vocabulary"
         }
-   
         
         try {
             const res = await API_CALL[0](vI)
@@ -30,12 +29,12 @@
         } catch (error) {
             if (error instanceof DefinitionsNotFoundError) {
                 // Handle the error, show a message to the user, etc.
-                console.error('Definitions not found:', error.message);
+                console.error('Definitions not found:', error.message)
                 defNotFound[0] = true
                 notFoundWord = vI
             } else {
                 // Handle other types of errors
-                console.error('An error occurred:', error);
+                console.error('An error occurred:', error)
             }
         }
 
@@ -45,12 +44,12 @@
         } catch (error) {
             if (error instanceof DefinitionsNotFoundError) {
                 // Handle the error, show a message to the user, etc.
-                console.error('Definitions not found:', error.message);
+                console.error('Definitions not found:', error.message)
                 defNotFound[1] = true
                 notFoundWord = vI
             } else {
                 // Handle other types of errors
-                console.error('An error occurred:', error);
+                console.error('An error occurred:', error)
             }
         }
 
@@ -73,10 +72,6 @@
 <svelte:window on:keydown={onKeyDown}/>
 <div id="mainPage">
     <div class="header">
-        <img class="icon" src="/vocabo.png" alt="Vocabo"/>
-        <!-- <button class="history"></button> -->
-        <button class="signup" on:click={()=>{}}>Sign Up</button>
-
         <div class="search">
             <input class="searchInput" bind:value={vocabInput} placeholder="Search: The vocab to learn today"/>
             <button class="searchIcon" on:click={search}><IoIosSearch/></button>
@@ -160,22 +155,10 @@
             justify-content: center;
             flex-direction: column;
             padding: 5px 0;
-            .icon {
-                height: 3Vh;
-                padding: 15px 0;
-            }
-            .signup {
-                background-color: inherit;
-                border: white 2px solid;
-                position: absolute;
-                border-radius: 5px;
-                right: 5vw;
-                top: 2vh;
-                height: 4vh;
-            }
             // search
             .search {
-                position: relative;
+                position: absolute;
+                top: 8vh;
                 .searchInput {
                     border-style: none;
                     width: 90vw;
@@ -201,7 +184,7 @@
         // dictionaries
         .dicts {
             position: relative;
-            margin-top: 12vh;
+            margin-top: 13vh;
             padding-bottom: 2.5vh;
             .dictionary {
                 background: #FFFFFF;
@@ -310,9 +293,9 @@
                 border-radius: 50%;
                 content: "";
                 height: 40px;
-                position: absolute;
-                top: 40vh;
-                left: 50%;
+                position: fixed;
+                top: 50vh;
+                left: 50vw;
                 transform: translate3d(-50%, -50%, 0);
                 width: 40px;
                 will-change: transform;
@@ -342,23 +325,11 @@
             height: 100vh;
             // header
             .header {
-                position: relative;
                 height: 18vh;
                 padding: 0;
-                .icon {
-                    height: 6vh;
-                    padding: 1vh;
-                }
-                .signup {
-                    
-                    height: 6vh;
-                    font-size: 16px;
-                    cursor: pointer;
-                    background-color: inherit;
-                }
                 // search
                 .search {
-                    height: 8vh;
+                    top: 9.5vh;
                     .searchInput {
                         width: 46vw;
                         height: 7.5vh;
@@ -376,7 +347,8 @@
             // dictionaries
             .dicts {
                 height: 82vh;
-                position: relative;
+                position: fixed;
+                top: 18vh;
                 margin: 0;
                 padding: 0;
                 .dictionary {
