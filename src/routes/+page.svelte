@@ -20,7 +20,7 @@
         if (vocabInput == "") {
             vI = "vocabulary"
         }
-        
+
         try {
             const res = await API_CALL[0](vI)
             dictAPIResult1 = await API_PARSE[0](res)
@@ -140,6 +140,7 @@
         background: #C8E4B2;
         width: 100vw;
         min-height: 100vh;
+        overflow-wrap: break-word;
         // header
         .header {
             position: fixed;
@@ -187,7 +188,7 @@
             .dictionary {
                 background: #FFFFFF;
                 width: calc(100vw - 50px);
-                padding: 15px;
+                padding: 30px 15px;
                 display: inline-block;
                 margin: 10px;
                 position: relative;
@@ -197,7 +198,7 @@
                     top: 0;
                     background: #7EAA92;
                     color: #FFFFFF;
-                    width: 125px;
+                    width: 150px;
                     line-height: 25px;
                     text-align: center;
                 }
@@ -205,6 +206,7 @@
                     font-size: 36px;
                     font-weight: normal;
                     margin: 0 0 10px 0;
+                    overflow-wrap: break-word;
                 }
                 .pos {
                     font-size: 14px;
@@ -223,6 +225,8 @@
                         display: inline-block;
                         white-space: pre-line;
                         font-weight: bold;
+                        width: 100%;
+                        overflow-wrap: break-word;
                     }
                     .exp {
                         margin: 5px 0 5px 10px;
