@@ -74,6 +74,9 @@
 <div id="mainPage">
     <div class="header">
         <img class="icon" src="/vocabo.png" alt="Vocabo"/>
+        <!-- <button class="history"></button> -->
+        <button class="signup" on:click={()=>{}}>Sign Up</button>
+
         <div class="search">
             <input class="searchInput" bind:value={vocabInput} placeholder="Search: The vocab to learn today"/>
             <button class="searchIcon" on:click={search}><IoIosSearch/></button>
@@ -151,22 +154,31 @@
             z-index: 1;
             background: #9ED2BE;
             width: 100vw;  
-            height: 10vh;
+            height: 12vh;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-direction: column;
+            padding: 5px 0;
             .icon {
                 height: 3Vh;
-                padding: 5px 0;
+                padding: 15px 0;
+            }
+            .signup {
+                background-color: inherit;
+                border: white 2px solid;
+                position: absolute;
+                border-radius: 5px;
+                right: 5vw;
+                top: 2vh;
+                height: 4vh;
             }
             // search
             .search {
-                height: 8vh;
                 position: relative;
                 .searchInput {
                     border-style: none;
-                    width: 80vw;
+                    width: 90vw;
                     height: 5vh;
                     border-radius: 45px;
                     padding: 0 2vw;
@@ -189,7 +201,7 @@
         // dictionaries
         .dicts {
             position: relative;
-            margin-top: 10vh;
+            margin-top: 12vh;
             padding-bottom: 2.5vh;
             .dictionary {
                 background: #FFFFFF;
@@ -332,8 +344,17 @@
             .header {
                 position: relative;
                 height: 18vh;
+                padding: 0;
                 .icon {
-                    height: 8vh;
+                    height: 6vh;
+                    padding: 1vh;
+                }
+                .signup {
+                    
+                    height: 6vh;
+                    font-size: 16px;
+                    cursor: pointer;
+                    background-color: inherit;
                 }
                 // search
                 .search {
