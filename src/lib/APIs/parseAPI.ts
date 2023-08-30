@@ -1,4 +1,4 @@
-import { DefinitionsNotFoundError } from "$lib/error";
+import { DefinitionsNotFoundError } from "$lib/error"
 
 const parseDictionaryAPI = async (res: Response): Promise<DictionaryAPI_Result> => {
     const data = await res.json()
@@ -18,8 +18,8 @@ const parseDictionaryAPI = async (res: Response): Promise<DictionaryAPI_Result> 
             }))
         }))
     }
-    return parsedResult;
-};
+    return parsedResult
+}
 
 const replaceWords = (str: String): String => {
     return str.replaceAll("[", "")
@@ -36,7 +36,7 @@ const parseUrbanDictionary = async (res: Response): Promise<UrbanDictionary_Resu
     }
     const parsedResult: UrbanDictionary_Result = {
         vocab: data.list[0].word,
-        definitions: data.list.map((def: urbandictionary_Definition) => ({
+        definitions: data.list.map((def: Urbandictionary_Definition) => ({
             definition: replaceWords(def.definition),
             example: replaceWords(def.example),
             thumbs_up: def.thumbs_up,
@@ -53,4 +53,4 @@ export const API_PARSE: [
 ] = [
         parseDictionaryAPI,
         parseUrbanDictionary
-];
+]

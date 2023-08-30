@@ -5,7 +5,7 @@
     import { user as firebaseUser } from '$lib/store';
     
     let loggedIn:Boolean = false
-    let loading:Boolean = true
+    let isLoading:Boolean = true
     let user:User|null
 
     const unsubscribe = firebaseUser.subscribe((value) => {
@@ -14,14 +14,14 @@
 
     onMount(() => {
         auth.onAuthStateChanged((newUser) => {
-            loading = true
+            isLoading = true
             firebaseUser.set(newUser)
             if (firebaseUser != null) {
                 loggedIn = true
             } else {
                 loggedIn = false
             }
-            loading = false
+            isLoading = false
         })
     })
 
@@ -44,7 +44,7 @@
 
 <div class="header">
     <button class="iconButton" on:click={()=>{window.location.href = "/"}}><img class="icon" src="/vocabo.png" alt="Vocabo"/></button>
-    {#if !loading}
+    {#if !isLoading}
         {#if loggedIn}
             <button class="custButton signout" on:click={vocaboSignOut}>Sign Out</button>
             <button class="custButton history" on:click={()=>{window.location.href = "/history"}}>History</button>

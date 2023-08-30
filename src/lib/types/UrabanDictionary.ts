@@ -1,8 +1,8 @@
 // before parse
-type urbandictionary_Definition = {
-    definition: string;
-    example: string;
-    thumbs_up: number;
+type Urbandictionary_Definition = {
+    definition: string
+    example: string
+    thumbs_up: number
     thumbs_down: number
 };
 

@@ -5,19 +5,27 @@
     import { API_CALL } from '$lib/APIs/callAPI';
     import { DefinitionsNotFoundError } from '$lib/error'
     import { page } from '$app/stores'
+    import { updateHistory } from '$lib/firebase.client';
+    import type { User } from "firebase/auth"
+    import { user as firebaseUser } from '$lib/store';
     // @ts-ignore
     import IoIosSearch from 'svelte-icons/io/IoIosSearch.svelte'
 
     let vocabInput:string = $page.url.searchParams.get("vocab") || ""
     let dictAPIResult1:DictionaryAPI_Result
     let dictAPIResult2:UrbanDictionary_Result
-    let isLoading:boolean = true; // Loading indicator
+    let isLoading:boolean = true
     let defNotFound:boolean[] = [false, false, false, false]
     let notFoundWord:string = ""
+    let user:User|null
+
+    const unsubscribe = firebaseUser.subscribe((value) => {
+        user = value
+    })
 
     const fetchData = async () => {
         let vI = vocabInput;
-        if (vocabInput == "") {
+        if (vocabInput == "" || !/^[a-zA-Z]+$/.test(vocabInput)) {
             vI = "vocabulary"
         }
 
@@ -28,12 +36,12 @@
             if (error instanceof DefinitionsNotFoundError) {
                 // Handle the error, show a message to the user, etc.
                 console.error('Definitions not found:', error.message)
-                defNotFound[0] = true
-                notFoundWord = vI
             } else {
                 // Handle other types of errors
-                console.error('An error occurred:', error)
+                console.error('An unexpected error occurred')
             }
+            defNotFound[0] = true
+            notFoundWord = vI
         }
 
         try {
@@ -43,14 +51,17 @@
             if (error instanceof DefinitionsNotFoundError) {
                 // Handle the error, show a message to the user, etc.
                 console.error('Definitions not found:', error.message)
-                defNotFound[1] = true
-                notFoundWord = vI
             } else {
                 // Handle other types of errors
-                console.error('An error occurred:', error)
+                console.error('An unexpected error occurred')
             }
+            defNotFound[1] = true
+            notFoundWord = vI
         }
 
+        if (user && vocabInput != "" && !(defNotFound[0] && defNotFound[1])) {
+            updateHistory(user.email!, vI)
+        }
         isLoading = false
     }
 
@@ -203,7 +214,7 @@
                 }
                 .vocab {
                     font-size: 36px;
-                    font-weight: normal;
+                    // font-weight: normal;
                     margin: 0 0 10px 0;
                     overflow-wrap: break-word;
                 }
