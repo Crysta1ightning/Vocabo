@@ -1,20 +1,26 @@
 <script lang="ts">
-  import { readHistory } from "$lib/firebase.client";
+  import { deleteHistory, readHistory } from "$lib/firebase.client";
     import { user as firebaseUser } from "$lib/store";
     import type { User } from "firebase/auth"
     import type { DocumentData } from "firebase/firestore"
 
-    let loading:Boolean = true
+    let isLoading:Boolean = true
     let user:User|null
     let vocabs:DocumentData[] = []
 
     const getHistory = async (userId:string) => {
         vocabs = await readHistory(userId)
-        loading = false
+        isLoading = false
+    }
+
+    const delHistory = async (vocab:string) => {
+        if (user != null) {
+           deleteHistory(user!.email!, vocab)
+        }
     }
 
     const unsubscribe = firebaseUser.subscribe((value) => {
-        loading = true
+        isLoading = true
         user = value
         if (user != null) {
             getHistory(user.email!)
@@ -24,16 +30,28 @@
 
 
 <div id="historyPage">
-    {#if !loading}
+    {#if isLoading}
+        <div class="loading"/>
+    {:else}
         <div class="histories">
             {#each vocabs as vocab}
-                <button class="history" on:click={() => {window.location.href="/?vocab="+vocab.vocab}}>
+                <div class="history">
                     <h3 class="vocab">{vocab.vocab}</h3>
-                    <p class="searchCount">Searched: {vocab.searchCount} times</p>
-                    <p class="lastSearched">
-                        Last Searched: {vocab.lastSearched}
-                    </p>
-                </button>
+                    <button class="link" on:click={() => {window.location.href="/?vocab="+vocab.vocab}}>link</button>
+                    <div class="info">
+                        <p class="searchCount">
+                            {#if vocab.searchCount === 1}
+                                Searched 1 time
+                            {:else}
+                                Searched {vocab.searchCount} times
+                            {/if}
+                        </p>
+                        <p class="lastSearched">
+                            {vocab.lastSearched}
+                        </p>
+                    </div>
+                    <button class="del" on:click={() => {delHistory(vocab.vocab)}}>del</button>
+                </div>
                 {:else}
                 <div class="notFound">
                     Search some vocabs to add to history~
@@ -48,36 +66,83 @@
 <style lang="scss">
 #historyPage {
     background: #C8E4B2;
-    height: 93vh;
+    min-height: 93vh;
     margin-top: 7vh;
     .histories {
         // margin: 70px 10px;
         padding: 10px;
         .history {
-            width: 100%;
-            border: none;
-            text-align: left;
             background-color: #FFFFFF;
             margin-bottom: 10px;
             padding: 10px;
+            position: relative;
             .vocab {
                 font-size: 20px;
                 margin: 0;
+                display: inline-block;
             }
-            .searchCount {
-                margin: 0;
+            .link {
+                font-size: 20px;
+                background-color: inherit;
+                border: none;
+                color: #1E453E;
             }
-            .lastSearched {
-                margin: 0;
+            .info {
+                color: #7EAA92;
+                .searchCount {
+                    min-width: 110px;
+                    display: inline-block;
+                    margin: 0 5px 0 0;
+                    // color: #7EAA92;
+                }
+                .lastSearched {
+                    min-width: 110px;
+                    display: inline-block;
+                    margin: 0 0 0 5px;
+                }
+            }
+            .del {
+                width: 40px;
+                height: 40px;
+                position: absolute;
+                right: 10px;
+                top: calc(50% - 20px);
+                background-color: #7EAA92;
+                color: #FFFFFF;
+                border: none;
             }
         }
     }
-    
+
+        // loading 
+        @keyframes spinner {
+        0% {
+        transform: translate3d(-50%, -50%, 0) rotate(0deg);
+        }
+        100% {
+        transform: translate3d(-50%, -50%, 0) rotate(360deg);
+        }
+    }
+    .loading::before {
+        animation: 1.5s linear infinite spinner;
+        animation-play-state: inherit;
+        border: solid 5px #f1f1f1;
+        border-bottom-color: #7EAA92;
+        border-radius: 50%;
+        content: "";
+        height: 40px;
+        position: fixed;
+        top: 50vh;
+        left: 50vw;
+        transform: translate3d(-50%, -50%, 0);
+        width: 40px;
+        will-change: transform;
+    }
 }
 
 @media screen and (min-width: 768px) {
     #historyPage {
-        height: 91vh;
+        min-height: 91vh;
         margin-top: 9vh;
         .histories {
             padding: 10px 20px;
@@ -88,9 +153,18 @@
             .history {
                 // width: 300px;
                 display: inline-block;
+                .link {
+                    cursor: pointer;
+                }
+                .del {
+                    cursor: pointer;
+                }
             }
         }
-
+        // loading 
+        .loading::before {
+            top: 50%;
+        }
     }
 }
 </style>
