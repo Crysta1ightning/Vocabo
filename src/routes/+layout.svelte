@@ -1,16 +1,22 @@
 <script lang="ts">
     import { onMount } from 'svelte'
     import { auth } from '$lib/firebase.client';
-    import { GoogleAuthProvider, signOut, signInWithRedirect } from "firebase/auth";
+    import { GoogleAuthProvider, signOut, signInWithRedirect, type User } from "firebase/auth";
+    import { user as firebaseUser } from '$lib/store';
+    
     let loggedIn:Boolean = false
     let loading:Boolean = true
+    let user:User|null
 
+    const unsubscribe = firebaseUser.subscribe((value) => {
+        user = value
+    })
 
     onMount(() => {
-        auth.onAuthStateChanged((user) => {
+        auth.onAuthStateChanged((newUser) => {
             loading = true
-            console.log(user)
-            if (user != null) {
+            firebaseUser.set(newUser)
+            if (firebaseUser != null) {
                 loggedIn = true
             } else {
                 loggedIn = false
@@ -24,7 +30,6 @@
         provider.addScope('profile')
         provider.addScope('email')
         await signInWithRedirect(auth, provider)
-
     }
 
     const vocaboSignOut = async () => {

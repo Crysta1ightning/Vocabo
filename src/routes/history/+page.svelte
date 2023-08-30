@@ -1,44 +1,50 @@
 <script lang="ts">
-    import { onMount } from 'svelte'
-    import { auth } from '$lib/firebase.client';
-
+    import { user as firebaseUser } from "$lib/store";
+    import type { User } from "firebase/auth"
+    
     let loggedIn:Boolean = false
     let loading:Boolean = true
+    let user:User|null
 
 
-    onMount(() => {
-        auth.onAuthStateChanged((user) => {
-            loading = true
-            console.log(user)
-            if (user != null) {
-                loggedIn = true
-            } else {
-                loggedIn = false
-            }
+    const unsubscribe = firebaseUser.subscribe((value) => {
+        loading = true
+        user = value
+        console.log(user)
+        if (user != null) {
             loading = false
-        })
+        }
     })
 </script>
 
 
 <div id="historyPage">
-    <div class="userContent">
-        <h1>History for user: </h1>
-    </div>
+    {#if !loading}
+        <div class="userContent">
+            History for user: { user?.email }
+        </div>
+        <div class="histories">
+            Histories
+        </div>
+    {/if}
 
 </div>
 
 
 <style lang="scss">
 #historyPage {
+    background: #C8E4B2;
+    width: 100vw;
+    min-height: 93vh;
     .userContent {
-        margin-top: 8vh;
+        margin-top: 7vh;
     }
     
 }
 
 @media screen and (min-width: 768px) {
     #historyPage {
+        min-height: 91vh;
         .userContent {
             margin-top: 9vh;
         }

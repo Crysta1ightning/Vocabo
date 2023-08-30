@@ -1,8 +1,8 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { EXAMPLE_NOTFOUND, DICTS } from "$lib/constants"
-    import { API_PARSE } from '../lib/APIs/parseAPI';
-    import { API_CALL } from '../lib/APIs/callAPI';
+    import { API_PARSE } from '$lib/APIs/parseAPI';
+    import { API_CALL } from '$lib/APIs/callAPI';
     import { DefinitionsNotFoundError } from '$lib/error'
     import { page } from '$app/stores'
     // @ts-ignore
@@ -11,9 +11,9 @@
     let vocabInput:string = $page.url.searchParams.get("vocab") || ""
     let dictAPIResult1:DictionaryAPI_Result
     let dictAPIResult2:UrbanDictionary_Result
-    let isLoading: boolean = true; // Loading indicator
-    let defNotFound: boolean[] = [false, false, false, false]
-    let notFoundWord: string = ""
+    let isLoading:boolean = true; // Loading indicator
+    let defNotFound:boolean[] = [false, false, false, false]
+    let notFoundWord:string = ""
 
     const fetchData = async () => {
         let vI = vocabInput;
@@ -140,7 +140,6 @@
         background: #C8E4B2;
         width: 100vw;
         min-height: 100vh;
-        overflow-wrap: break-word;
         // header
         .header {
             position: fixed;
