@@ -57,6 +57,7 @@
                                 Searched {vocab.searchCount} times
                             {/if}
                         </p>
+                        |
                         <p class="lastSearched">
                             {vocab.lastSearched}
                         </p>
@@ -80,8 +81,10 @@
     min-height: 93vh;
     margin-top: 7vh;
     .histories {
-        // margin: 70px 10px;
         padding: 10px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        grid-column-gap: 10px;
         .history {
             background-color: #FFFFFF;
             margin-bottom: 10px;
@@ -101,13 +104,11 @@
             .info {
                 color: #7EAA92;
                 .searchCount {
-                    min-width: 110px;
                     display: inline-block;
                     margin: 0 5px 0 0;
                     // color: #7EAA92;
                 }
                 .lastSearched {
-                    min-width: 110px;
                     display: inline-block;
                     margin: 0 0 0 5px;
                 }
@@ -158,11 +159,7 @@
         .histories {
             padding: 10px 20px;
             width: calc(100vw - 40px);
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-            grid-column-gap: 10px;
             .history {
-                // width: 300px;
                 display: inline-block;
                 .link {
                     cursor: pointer;
