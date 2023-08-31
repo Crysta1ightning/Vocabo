@@ -4,10 +4,15 @@
     import type { User } from "firebase/auth"
     import { onSnapshot, type DocumentData, collection } from "firebase/firestore"
     import { onDestroy } from "svelte";
+    import { formatDate, getCompareFn } from "$lib/utils" 
+    import { faLink, faTrashCan } from '@fortawesome/free-solid-svg-icons'
+    // @ts-ignore
+    import Fa from 'svelte-fa/src/fa.svelte'
 
     let isLoading:Boolean = true
     let user:User|null
     let vocabs:DocumentData[] = []
+    let sortBy:string
 
     const delHistory = async (vocab:string) => {
         if (user != null) {
@@ -19,6 +24,7 @@
         isLoading = true
         if (user && user.email) {
             vocabs = await readHistory(user.email)
+            vocabs = vocabs.sort(getCompareFn("recent"))
             isLoading = false
         }   
     }
@@ -34,6 +40,12 @@
         }
     })
 
+    const sortHistory = () => {
+        vocabs = vocabs.sort(getCompareFn(sortBy))
+        console.log(sortBy)
+        console.log(vocabs)
+    }
+
     onDestroy(() => {
         unsubscribe()
     })
@@ -44,11 +56,21 @@
     {#if isLoading}
         <div class="loading"/>
     {:else}
+        <div class="filter">
+            <select bind:value={sortBy} on:change={sortHistory}>
+                <option value="" selected disabled hidden>Sort By</option>
+                <option value="alphabetic">Alphabetic order</option>
+                <option value="recent">Most recently searched</option>
+                <option value="frequent">Most frequently searched</option>
+            </select>
+        </div>
         <div class="histories">
             {#each vocabs as vocab}
                 <div class="history">
                     <h3 class="vocab">{vocab.vocab}</h3>
-                    <button class="link" on:click={() => {window.location.href="/?vocab="+vocab.vocab}}>link</button>
+                    <button class="link" on:click={() => {window.location.href="/?vocab="+vocab.vocab}}>
+                        <Fa icon={faLink} />
+                    </button>
                     <div class="info">
                         <p class="searchCount">
                             {#if vocab.searchCount === 1}
@@ -59,10 +81,12 @@
                         </p>
                         |
                         <p class="lastSearched">
-                            {vocab.lastSearched}
+                            {formatDate(vocab.lastSearched)}
                         </p>
                     </div>
-                    <button class="del" on:click={() => {delHistory(vocab.vocab)}}>del</button>
+                    <button class="del" on:click={() => {delHistory(vocab.vocab)}}>
+                        <Fa icon={faTrashCan} />
+                    </button>
                 </div>
                 {:else}
                 <div class="notFound">
@@ -80,6 +104,17 @@
     background: #C8E4B2;
     min-height: 93vh;
     margin-top: 7vh;
+    .filter {
+        // color: #FFFFFF;
+        padding: 10px;
+        background-color: #7EAA92;
+        select {
+            border: 0;
+            box-shadow: none;
+            color: #7EAA92;
+            background-color: #FFFFFF;
+        }
+    }
     .histories {
         padding: 10px;
         display: grid;
@@ -96,7 +131,7 @@
                 display: inline-block;
             }
             .link {
-                font-size: 20px;
+                font-size: 16px;
                 background-color: inherit;
                 border: none;
                 color: #1E453E;
@@ -119,8 +154,9 @@
                 position: absolute;
                 right: 10px;
                 top: calc(50% - 20px);
-                background-color: #7EAA92;
-                color: #FFFFFF;
+                font-size: 25px;
+                background-color: inherit;
+                color: #7EAA92;
                 border: none;
             }
         }

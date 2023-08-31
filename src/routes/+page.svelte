@@ -8,8 +8,9 @@
     import { updateHistory } from '$lib/firebase.client';
     import type { User } from "firebase/auth"
     import { user as firebaseUser } from '$lib/store';
+    import { faSearch } from '@fortawesome/free-solid-svg-icons'
     // @ts-ignore
-    import IoIosSearch from 'svelte-icons/io/IoIosSearch.svelte'
+    import Fa from 'svelte-fa/src/fa.svelte'
 
     let vocabInput:string = $page.url.searchParams.get("vocab") || ""
     let dictAPIResult1:DictionaryAPI_Result
@@ -79,7 +80,7 @@
     <div class="header">
         <div class="search">
             <input class="searchInput" bind:value={vocabInput} placeholder="Search: The vocab to learn today"/>
-            <button class="searchIcon" on:click={search}><IoIosSearch/></button>
+            <button class="searchIcon" on:click={search}><Fa icon={faSearch} /></button>
         </div>
     </div>
 
@@ -182,6 +183,7 @@
                     right: 1vw;
                     top: 1vh;
                     height: 3vh;
+                    font-size: 16px;
                 }
             }
         }

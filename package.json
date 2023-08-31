@@ -24,9 +24,9 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@fortawesome/free-solid-svg-icons": "^6.4.2",
 		"@sveltejs/adapter-static": "^2.0.3",
 		"firebase": "^10.3.0",
-		"firebase-tools": "^12.5.2",
-		"svelte-icons": "^2.1.0"
+		"svelte-fa": "^3.0.4"
 	}
 }
