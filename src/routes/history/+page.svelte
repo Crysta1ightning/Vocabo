@@ -1,17 +1,13 @@
 <script lang="ts">
-  import { deleteHistory, readHistory } from "$lib/firebase.client";
+  import { db, deleteHistory, readHistory } from "$lib/firebase.client";
     import { user as firebaseUser } from "$lib/store";
     import type { User } from "firebase/auth"
-    import type { DocumentData } from "firebase/firestore"
+    import { onSnapshot, type DocumentData, collection } from "firebase/firestore"
+    import { onDestroy } from "svelte";
 
     let isLoading:Boolean = true
     let user:User|null
     let vocabs:DocumentData[] = []
-
-    const getHistory = async (userId:string) => {
-        vocabs = await readHistory(userId)
-        isLoading = false
-    }
 
     const delHistory = async (vocab:string) => {
         if (user != null) {
@@ -19,12 +15,27 @@
         }
     }
 
+    const getHistory = async () => {
+        isLoading = true
+        if (user && user.email) {
+            vocabs = await readHistory(user.email)
+            isLoading = false
+        }   
+    }
+
     const unsubscribe = firebaseUser.subscribe((value) => {
         isLoading = true
         user = value
-        if (user != null) {
-            getHistory(user.email!)
+        if (user != null && user.email) {
+            const thisColl = collection(db, "userHistories", user.email || "", "vocabs")
+            onSnapshot(thisColl, (coll) => {
+                getHistory()
+            })
         }
+    })
+
+    onDestroy(() => {
+        unsubscribe()
     })
 </script>
 

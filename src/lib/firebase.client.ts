@@ -1,7 +1,7 @@
 import { deleteApp, getApp, getApps, initializeApp } from "firebase/app";
 // import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
-import { collection, getFirestore, type DocumentData } from "firebase/firestore"
+import { collection, getFirestore, type DocumentData, onSnapshot } from "firebase/firestore"
 import { doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, Timestamp, increment } from "firebase/firestore"
 import { PUBLIC_APIKEY, PUBLIC_APPID, PUBLIC_AUTHDOMAIN, PUBLIC_MEASUREMENTID, PUBLIC_MESSAGINGSENDERID, PUBLIC_PROJECTID, PUBLIC_STORAGEBUCKET } from '$env/static/public';
 
@@ -30,19 +30,30 @@ export const db = getFirestore(firebaseApp)
 
 export const updateHistory = async (userId:string, vocab:string) => {
     try {
-        let thisDoc = doc(db, "userHistories", userId, "vocabs", vocab)
-        const docRef = await getDoc(thisDoc)
-        console.log(Timestamp.now())
+        let userDocRef = doc(db, "userHistories", userId)
+        const userDoc = await getDoc(userDocRef)
+        const data = userDoc.data()
+        if (data && data.lastVocab === vocab) {
+            return
+        } else {
+            await updateDoc(userDocRef, {
+                "lastVocab": vocab  
+            })
+        }
 
-        if (docRef.exists()) {
+
+        let thisDocRef = doc(db, "userHistories", userId, "vocabs", vocab)
+        const thisDoc = await getDoc(thisDocRef)
+
+        if (thisDoc.exists()) {
             // udpate
-            await updateDoc(thisDoc, {
+            await updateDoc(thisDocRef, {
                 "searchCount": increment(1),
                 "lastSearched": Timestamp.now()
             })
         } else {
             // set
-            await setDoc(thisDoc, {
+            await setDoc(thisDocRef, {
                 "searchCount": 1,
                 "lastSearched": Timestamp.now()
             })
@@ -66,7 +77,6 @@ function formatDate(date:Date) {
     );
 }
 
-
 export const readHistory = async (userId:string):Promise<DocumentData[]> => {
     try {
         let thisColl = collection(db, "userHistories", userId, "vocabs")
@@ -75,9 +85,9 @@ export const readHistory = async (userId:string):Promise<DocumentData[]> => {
         colRef.forEach((doc) => {
             const date = new Date(doc.data().lastSearched.seconds*1000)
             vocabs.push({
-            vocab: doc.id,
-            searchCount: doc.data().searchCount,
-            lastSearched: formatDate(date)
+                vocab: doc.id,
+                searchCount: doc.data().searchCount,
+                lastSearched: formatDate(date)
             })
         })
         return vocabs

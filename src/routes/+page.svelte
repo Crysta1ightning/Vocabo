@@ -34,10 +34,8 @@
             dictAPIResult1 = await API_PARSE[0](res)
         } catch (error) {
             if (error instanceof DefinitionsNotFoundError) {
-                // Handle the error, show a message to the user, etc.
                 console.error('Definitions not found:', error.message)
             } else {
-                // Handle other types of errors
                 console.error('An unexpected error occurred')
             }
             defNotFound[0] = true
@@ -49,10 +47,8 @@
             dictAPIResult2 = await API_PARSE[1](res)
         } catch (error) {
             if (error instanceof DefinitionsNotFoundError) {
-                // Handle the error, show a message to the user, etc.
                 console.error('Definitions not found:', error.message)
             } else {
-                // Handle other types of errors
                 console.error('An unexpected error occurred')
             }
             defNotFound[1] = true
