@@ -16,7 +16,7 @@
         auth.onAuthStateChanged((newUser) => {
             isLoading = true
             firebaseUser.set(newUser)
-            if (firebaseUser != null) {
+            if (newUser != null) {
                 loggedIn = true
             } else {
                 loggedIn = false
