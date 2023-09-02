@@ -1,50 +1,60 @@
 <script lang="ts">
-  import { db, deleteHistory, readHistory } from "$lib/firebase.client";
+  import { db, deleteHistory, readHistory, transferHistory } from "$lib/firebase.client";
     import { user as firebaseUser } from "$lib/store";
     import type { User } from "firebase/auth"
     import { onSnapshot, type DocumentData, collection } from "firebase/firestore"
-    import { onDestroy } from "svelte";
-    import { formatDate, getCompareFn } from "$lib/utils" 
+    import { onDestroy, onMount } from "svelte";
+    import { deleteHistoryLocal, formatDate, getCompareFn, readHistoryLocal } from "$lib/utils" 
     import { faLink, faTrashCan } from '@fortawesome/free-solid-svg-icons'
     // @ts-ignore
     import Fa from 'svelte-fa/src/fa.svelte'
 
     let isLoading:Boolean = true
+    let isSignedIn:Boolean = false
     let user:User|null
     let vocabs:DocumentData[] = []
     let sortBy:string
 
     const delHistory = async (vocab:string) => {
-        if (user != null) {
-           deleteHistory(user!.email!, vocab)
+        if (user && user.email) {
+           deleteHistory(user.email, vocab)
+        } else {
+            deleteHistoryLocal(vocab)
+            vocabs = vocabs.filter((vocabEntry) => vocabEntry.vocab != vocab)
         }
     }
 
     const getHistory = async () => {
-        isLoading = true
-        if (user && user.email) {
-            vocabs = await readHistory(user.email)
-            vocabs = vocabs.sort(getCompareFn("recent"))
-            isLoading = false
-        }   
+        vocabs = await readHistory(user!.email!)
+        vocabs = vocabs.sort(getCompareFn("recent"))
+        isLoading = false
     }
 
-    const unsubscribe = firebaseUser.subscribe((value) => {
-        isLoading = true
+    const unsubscribe = firebaseUser.subscribe(async (value) => {
         user = value
-        if (user != null && user.email) {
+        console.log(user)
+        if (user && user.email) {
+            isSignedIn = true
+            await transferHistory(user.email)
             const thisColl = collection(db, "userHistories", user.email || "", "vocabs")
             onSnapshot(thisColl, (coll) => {
                 getHistory()
             })
         }
+        
     })
 
     const sortHistory = () => {
         vocabs = vocabs.sort(getCompareFn(sortBy))
-        console.log(sortBy)
-        console.log(vocabs)
     }
+
+    onMount(() => {
+        vocabs = readHistoryLocal()
+        vocabs = vocabs.sort(getCompareFn("recent"))
+        setTimeout(() => {
+            isLoading = false
+        }, 1500)
+    })
 
     onDestroy(() => {
         unsubscribe()
@@ -56,6 +66,11 @@
     {#if isLoading}
         <div class="loading"/>
     {:else}
+        {#if !isSignedIn}
+            <div class="warning">
+                You are not signed in yet, history might be lost
+            </div>
+        {/if}
         <div class="filter">
             <select bind:value={sortBy} on:change={sortHistory}>
                 <option value="" selected disabled hidden>Sort By</option>
@@ -89,7 +104,7 @@
                     </button>
                 </div>
                 {:else}
-                <div class="notFound">
+                <div class="warning notFound">
                     Search some vocabs to add to history~
                 </div>
             {/each}
@@ -120,6 +135,7 @@
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
         grid-column-gap: 10px;
+        position: relative;
         .history {
             background-color: #FFFFFF;
             margin-bottom: 10px;
@@ -160,10 +176,16 @@
                 border: none;
             }
         }
+        .notFound {
+            width: 100vw;
+            position: absolute;
+            left: 0;
+            top: 0
+        }
     }
 
-        // loading 
-        @keyframes spinner {
+    // loading 
+    @keyframes spinner {
         0% {
         transform: translate3d(-50%, -50%, 0) rotate(0deg);
         }
@@ -185,6 +207,10 @@
         transform: translate3d(-50%, -50%, 0);
         width: 40px;
         will-change: transform;
+    }
+    .warning {
+        background: #FFD9B7;
+        text-align: center;
     }
 }
 

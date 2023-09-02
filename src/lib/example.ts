@@ -5,32 +5,34 @@ const userHistories = [
     {
         "0830david@gmail.com": {
 
+            lastVocab: "Lemon",
             // sub-collection: vocab
             // documents: apple, banana 
-            vocabs: [
-                "apple", {
-                    searched: 10,
+            vocabs: {
+                "apple": {
+                    searchCount: 10,
                     lastSearched: 1869498348
                 },
-                "banana", {
-                    searched: 5,
+                "banana": {
+                    searchCount: 5,
                     lastSearched: 1869445648
                 }
-            ]
+            }
         }
     },
     {
         "vocabo.com@gmail.com": {
-            vocabs: [
-                "orange", {
-                    searched: 7,
+            lastVocab: "Honey",
+            vocabs: {
+                "orange": {
+                    searchCount: 7,
                     lastSearched: 1869156166
                 },
-                "potato", {
-                    searched: 9,
+                "potato": {
+                    searchCount: 9,
                     lastSearched: 1869115346
                 }
-            ]
+            }
         }
     }
 ]

@@ -5,24 +5,30 @@
     import { API_CALL } from '$lib/APIs/callAPI';
     import { DefinitionsNotFoundError } from '$lib/error'
     import { page } from '$app/stores'
-    import { updateHistory } from '$lib/firebase.client';
+    import { transferHistory, updateHistory } from '$lib/firebase.client';
     import type { User } from "firebase/auth"
     import { user as firebaseUser } from '$lib/store';
-    import { faSearch } from '@fortawesome/free-solid-svg-icons'
+    import { faL, faSearch } from '@fortawesome/free-solid-svg-icons'
     import { faThumbsUp, faThumbsDown } from '@fortawesome/free-regular-svg-icons'
     // @ts-ignore
     import Fa from 'svelte-fa/src/fa.svelte'
+    import { updateHistoryLocal } from '$lib/utils';
 
     let vocabInput:string = $page.url.searchParams.get("vocab") || ""
     let dictAPIResult1:DictionaryAPI_Result
     let dictAPIResult2:UrbanDictionary_Result
     let isLoading:boolean = true
+    let isSignedIn:Boolean = false
     let defNotFound:boolean[] = [false, false, false, false]
     let notFoundWord:string = ""
     let user:User|null
 
-    const unsubscribe = firebaseUser.subscribe((value) => {
+    const unsubscribe = firebaseUser.subscribe(async (value) => {
         user = value
+        if (user && user.email) {
+            isSignedIn = true
+            await transferHistory(user.email)
+        }
     })
 
     const fetchData = async () => {
@@ -57,8 +63,12 @@
             notFoundWord = vI
         }
 
-        if (user && vocabInput != "" && !(defNotFound[0] && defNotFound[1])) {
-            updateHistory(user.email!, vI)
+        if (vocabInput != "" && !(defNotFound[0] && defNotFound[1])) {
+            if (user) {
+                updateHistory(user.email!, vI)
+            } else {
+                updateHistoryLocal(vI)
+            }
         }
         isLoading = false
     }
@@ -89,6 +99,11 @@
         {#if isLoading}
             <div class="loading"/>
         {:else}
+            {#if !isSignedIn}
+                <div class="warning">
+                    You are not signed in yet, history might be lost
+                </div>
+            {/if}
             <div class="dictionary" id="dict1">
                 <div class="label">{DICTS[0]}</div>
                 {#if defNotFound[0]}
@@ -311,6 +326,10 @@
                 width: 40px;
                 will-change: transform;
             }
+        }
+        .warning {
+            background: #FFD9B7;
+            text-align: center;
         }
     }
 

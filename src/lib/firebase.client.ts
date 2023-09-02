@@ -4,6 +4,7 @@ import { getAuth } from "firebase/auth";
 import { collection, getFirestore, type DocumentData, onSnapshot } from "firebase/firestore"
 import { doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, Timestamp, increment } from "firebase/firestore"
 import { PUBLIC_APIKEY, PUBLIC_APPID, PUBLIC_AUTHDOMAIN, PUBLIC_MEASUREMENTID, PUBLIC_MESSAGINGSENDERID, PUBLIC_PROJECTID, PUBLIC_STORAGEBUCKET } from '$env/static/public';
+import type { UserHistory } from "$lib/types/UserHistory"
 
 const firebaseConfig = {
   apiKey: PUBLIC_APIKEY,
@@ -33,14 +34,11 @@ export const updateHistory = async (userId:string, vocab:string) => {
         let userDocRef = doc(db, "userHistories", userId)
         const userDoc = await getDoc(userDocRef)
         const data = userDoc.data()
-        if (data && data.lastVocab === vocab) {
-            return
-        } else {
+        if (data && data.lastVocab != vocab) {
             await updateDoc(userDocRef, {
                 "lastVocab": vocab  
             })
         }
-
 
         let thisDocRef = doc(db, "userHistories", userId, "vocabs", vocab)
         const thisDoc = await getDoc(thisDocRef)
@@ -59,7 +57,7 @@ export const updateHistory = async (userId:string, vocab:string) => {
             })
         }
     } catch (error) {
-        console.log(error)
+        alert(error)
     }
 }
 
@@ -77,17 +75,64 @@ export const readHistory = async (userId:string):Promise<DocumentData[]> => {
         })
         return vocabs
     } catch (error) {
-        console.log(error)
+        alert(error)
     }
     return []
 }
 
 export const deleteHistory = async (userId:string, vocab:string) => {
     try {
+        let userDocRef = doc(db, "userHistories", userId)
+        const userDoc = await getDoc(userDocRef)
+        const data = userDoc.data()
+        if (data && data.lastVocab === vocab) {
+            await updateDoc(userDocRef, {
+                "lastVocab": ""
+            })
+        } 
+
         let thisDoc = doc(db, "userHistories", userId, "vocabs", vocab)
         await deleteDoc(thisDoc)
     } catch (error) {
-        console.log(error)
+        alert(error)
+    }
+}
+
+export const transferHistory = async (userId:string) => {
+    try {
+        const userHistoryNull:string|null = localStorage.getItem("userHistory")
+        if (userHistoryNull === null) return
+
+        const userHistoryVocabs:UserHistory["vocabs"] = JSON.parse(userHistoryNull).vocabs 
+        for (const key in userHistoryVocabs) {
+            let thisDocRef = doc(db, "userHistories", userId, "vocabs", key)
+            const thisDoc = await getDoc(thisDocRef)
+            const vocab = userHistoryVocabs[key]
+            if (thisDoc.exists()) {
+                // if exists in cloud, add the current searchCount to it
+                await updateDoc(thisDocRef, {
+                    "searchCount": increment(vocab.searchCount),
+                    "lastSearched": vocab.lastSearched
+                })
+            } else {
+                // if not exists in cloud, simply add it to cloud
+                await setDoc(thisDocRef, {
+                    "searchCount": vocab.searchCount,
+                    "lastSearched": vocab.lastSearched
+                })
+
+            }
+        }   
+
+        const userHistory = JSON.parse(userHistoryNull)
+        let userDocRef = doc(db, "userHistories", userId)
+        await updateDoc(userDocRef, {
+            "lastVocab": userHistory.lastVocab
+        })
+
+        localStorage.removeItem("userHistory")
+    } catch (error) {
+        alert(error)
     }
 }
 

@@ -45,9 +45,9 @@
 <div class="header">
     <button class="iconButton" on:click={()=>{window.location.href = "/"}}><img class="icon" src="/vocabo.png" alt="Vocabo"/></button>
     {#if !isLoading}
+        <button class="custButton history" on:click={()=>{window.location.href = "/history"}}>History</button>
         {#if loggedIn}
             <button class="custButton signout" on:click={vocaboSignOut}>Sign Out</button>
-            <button class="custButton history" on:click={()=>{window.location.href = "/history"}}>History</button>
         {:else}
             <button class="custButton signin" on:click={vocaboSignIn}>Sign In</button>    
         {/if}
