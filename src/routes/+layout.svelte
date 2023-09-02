@@ -6,11 +6,6 @@
     
     let loggedIn:Boolean = false
     let isLoading:Boolean = true
-    let user:User|null
-
-    const unsubscribe = firebaseUser.subscribe((value) => {
-        user = value
-    })
 
     onMount(() => {
         auth.onAuthStateChanged((newUser) => {

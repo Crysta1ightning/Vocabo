@@ -1,6 +1,6 @@
 <script lang="ts">
   import { db, deleteHistory, readHistory, transferHistory } from "$lib/firebase.client";
-    import { user as firebaseUser } from "$lib/store";
+    import { defaultUser, user as firebaseUser } from "$lib/store";
     import type { User } from "firebase/auth"
     import { onSnapshot, type DocumentData, collection } from "firebase/firestore"
     import { onDestroy, onMount } from "svelte";
@@ -39,6 +39,7 @@
     }
 
     const unsubscribe = firebaseUser.subscribe(async (value) => {
+        if (value === defaultUser) return
         user = value
         if (user && user.email) {
             isSignedIn = true
@@ -49,18 +50,17 @@
             })
         } else {
             if (typeof window !== 'undefined') {
+                isSignedIn = false
                 vocabs = readHistoryLocal()
                 sortHistory()
+                isLoading = false
             }
         }
     })
 
     onMount(() => {
-        vocabs = readHistoryLocal()
-        sortHistory()
-        setTimeout(() => {
-            isLoading = false
-        }, 3000)
+        // vocabs = readHistoryLocal()
+        // sortHistory()
     })
 
     onDestroy(() => {

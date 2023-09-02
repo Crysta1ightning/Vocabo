@@ -7,8 +7,8 @@
     import { page } from '$app/stores'
     import { transferHistory, updateHistory } from '$lib/firebase.client';
     import type { User } from "firebase/auth"
-    import { user as firebaseUser } from '$lib/store';
-    import { faL, faSearch } from '@fortawesome/free-solid-svg-icons'
+    import { defaultUser, user as firebaseUser } from '$lib/store';
+    import { faSearch } from '@fortawesome/free-solid-svg-icons'
     import { faThumbsUp, faThumbsDown } from '@fortawesome/free-regular-svg-icons'
     // @ts-ignore
     import Fa from 'svelte-fa/src/fa.svelte'
@@ -24,7 +24,9 @@
     let user:User|null
 
     const unsubscribe = firebaseUser.subscribe(async (value) => {
+        if (value === defaultUser) return
         user = value
+        console.log(value)
         if (user && user.email) {
             isSignedIn = true
             await transferHistory(user.email)
@@ -75,9 +77,6 @@
     }
 
     onMount(() => {
-        setTimeout(() => {
-            isLoading = false
-        }, 3000)
         fetchData()
     });
 
