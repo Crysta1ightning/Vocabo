@@ -9,6 +9,7 @@
     import type { User } from "firebase/auth"
     import { user as firebaseUser } from '$lib/store';
     import { faSearch } from '@fortawesome/free-solid-svg-icons'
+    import { faThumbsUp, faThumbsDown } from '@fortawesome/free-regular-svg-icons'
     // @ts-ignore
     import Fa from 'svelte-fa/src/fa.svelte'
 
@@ -119,8 +120,8 @@
                             <div class="defblock">
                                 <p class="def">{defblock.definition}</p>
                                 <div class="thumbs">
-                                    <div class="thumb up">+{defblock.thumbs_up}</div>
-                                    <div class="thumb down">-{defblock.thumbs_down}</div>
+                                    <div class="thumb up"><Fa icon={faThumbsUp} />{defblock.thumbs_up}</div>
+                                    <div class="thumb down"><Fa icon={faThumbsDown} />{defblock.thumbs_down}</div>
                                 </div>
                                 <p class="exp" class:notfound={defblock.example == ""}>{defblock.example || EXAMPLE_NOTFOUND}</p>
                             </div>
