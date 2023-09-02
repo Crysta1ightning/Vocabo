@@ -33,8 +33,9 @@
 
     const fetchData = async () => {
         let vI = vocabInput;
-        if (vocabInput == "" || !/^[a-zA-Z]+$/.test(vocabInput)) {
+        if (vocabInput == "" || !/^[a-zA-Z ]+$/.test(vocabInput)) {
             vI = "vocabulary"
+            vocabInput = ""
         }
 
         try {
@@ -62,10 +63,10 @@
             defNotFound[1] = true
             notFoundWord = vI
         }
-
+        console.log(vocabInput)
         if (vocabInput != "" && !(defNotFound[0] && defNotFound[1])) {
-            if (user) {
-                updateHistory(user.email!, vI)
+            if (user && user.email) {
+                updateHistory(user.email, vI)
             } else {
                 updateHistoryLocal(vI)
             }
@@ -73,7 +74,12 @@
         isLoading = false
     }
 
-    onMount(fetchData);
+    onMount(() => {
+        setTimeout(() => {
+            isLoading = false
+        }, 3000)
+        fetchData()
+    });
 
     const search = () => {
         window.location.href = "/?vocab=" + vocabInput

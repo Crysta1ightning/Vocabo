@@ -57,7 +57,7 @@ export const updateHistory = async (userId:string, vocab:string) => {
             })
         }
     } catch (error) {
-        alert(error)
+        console.log(error)
     }
 }
 
@@ -75,7 +75,7 @@ export const readHistory = async (userId:string):Promise<DocumentData[]> => {
         })
         return vocabs
     } catch (error) {
-        alert(error)
+        console.log(error)
     }
     return []
 }
@@ -94,7 +94,7 @@ export const deleteHistory = async (userId:string, vocab:string) => {
         let thisDoc = doc(db, "userHistories", userId, "vocabs", vocab)
         await deleteDoc(thisDoc)
     } catch (error) {
-        alert(error)
+        console.log(error)
     }
 }
 
@@ -132,7 +132,7 @@ export const transferHistory = async (userId:string) => {
 
         localStorage.removeItem("userHistory")
     } catch (error) {
-        alert(error)
+        console.log(error)
     }
 }
 

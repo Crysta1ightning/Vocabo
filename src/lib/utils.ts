@@ -85,7 +85,7 @@ export const updateHistoryLocal = (vocab:string) => {
             localStorage.setItem("userHistory", JSON.stringify(userHistory))
         }
     } catch (error) {
-        alert(error)
+        console.log(error)
     }
 }
 
@@ -106,7 +106,7 @@ export const readHistoryLocal = ():DocumentData[] => {
             return vocabs
         } 
     } catch (error) {
-        alert(error)
+        console.log(error)
     }
     return []
 }
@@ -126,7 +126,7 @@ export const deleteHistoryLocal = (vocab:string) => {
             localStorage.setItem("userHistory", JSON.stringify(updatedHistory))
         } 
     } catch (error) {
-        alert(error)
+        console.log(error)
     }
 }
 

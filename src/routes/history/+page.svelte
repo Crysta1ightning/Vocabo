@@ -13,7 +13,7 @@
     let isSignedIn:Boolean = false
     let user:User|null
     let vocabs:DocumentData[] = []
-    let sortBy:string
+    let sortBy:string = ""
 
     const delHistory = async (vocab:string) => {
         if (user && user.email) {
@@ -26,34 +26,41 @@
 
     const getHistory = async () => {
         vocabs = await readHistory(user!.email!)
-        vocabs = vocabs.sort(getCompareFn("recent"))
+        sortHistory()
         isLoading = false
+    }
+
+    const sortHistory = () => {
+        if (sortBy === "") {
+            vocabs = vocabs.sort(getCompareFn("recent"))
+        } else {
+            vocabs = vocabs.sort(getCompareFn(sortBy))
+        }
     }
 
     const unsubscribe = firebaseUser.subscribe(async (value) => {
         user = value
-        console.log(user)
         if (user && user.email) {
             isSignedIn = true
             await transferHistory(user.email)
             const thisColl = collection(db, "userHistories", user.email || "", "vocabs")
-            onSnapshot(thisColl, (coll) => {
+            onSnapshot(thisColl, (coll) => {    
                 getHistory()
             })
+        } else {
+            if (typeof window !== 'undefined') {
+                vocabs = readHistoryLocal()
+                sortHistory()
+            }
         }
-        
     })
-
-    const sortHistory = () => {
-        vocabs = vocabs.sort(getCompareFn(sortBy))
-    }
 
     onMount(() => {
         vocabs = readHistoryLocal()
-        vocabs = vocabs.sort(getCompareFn("recent"))
+        sortHistory()
         setTimeout(() => {
             isLoading = false
-        }, 1500)
+        }, 3000)
     })
 
     onDestroy(() => {
